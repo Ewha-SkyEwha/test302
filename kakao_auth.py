@@ -24,7 +24,7 @@ def get_kakao_login_url():
     kakao_login_url = (
         f"{settings.kakao_auth_url}"
         f"?client_id={settings.kakao_client_id}"
-        # 추가: settings.kakao_login_redirect_url 은 반드시 공개 https + 본 라우트(/api/v1/auth/kakao/callback)를 가리켜야 함
+        # 추가: settings.kakao_login_redirect_url 은 반드시 공개 https + 본 라우트(/api/v1/auth/kakao-callback)를 가리켜야 함
         f"&redirect_uri={settings.kakao_login_redirect_url}"
         f"&response_type=code"
     )
@@ -34,7 +34,7 @@ def get_kakao_login_url():
 # 추가(중요): 카카오 OAuth 콜백 → 앱 스킴으로 302 리다이렉트
 # - 카카오가 여기로 code를 전달함
 # - 백엔드는 앱 스킴으로 302 시켜서 안드로이드 앱 복귀
-@router.get("/kakao/callback")
+@router.get("/kakao-callback")
 def kakao_callback(code: str):
     """
     카카오 OAuth 콜백을 백엔드가 받고 앱 스킴으로 302 리다이렉트
@@ -45,7 +45,7 @@ def kakao_callback(code: str):
 
 
 # 사용자가 login_url로 들어가 로그인을 진행하면 인가 코드가 발급
-# 예시) https://YOUR_DOMAIN/api/v1/auth/kakao/callback?code=abcdefg12345
+# 예시) https://YOUR_DOMAIN/api/v1/auth/kakao-callback?code=abcdefg12345
 
 # 1단계: 소셜 로그인 인증
 # 인가 코드에 관한 리턴값을 통해 신규/기존 회원 구분
