@@ -31,17 +31,16 @@ def get_kakao_login_url():
     return {"login_url": kakao_login_url}
 
 
-# 추가(중요): 카카오 OAuth 콜백 → 앱 스킴으로 302 리다이렉트
+# 추가: 카카오 OAuth 콜백 → 앱 스킴으로 302 리다이렉트
 # - 카카오가 여기로 code를 전달함
 # - 백엔드는 앱 스킴으로 302 시켜서 안드로이드 앱 복귀
-@router.get("/kakao-callback")
-def kakao_callback(code: str):
-    """
-    카카오 OAuth 콜백을 백엔드가 받고 앱 스킴으로 302 리다이렉트
-    앱은 딥링크의 code를 꺼내 /api/v1/auth/kakao/login 에 넘김
-    """
-    redirect_url = f"{APP_SCHEME_CALLBACK}?provider=kakao&code={code}"
-    return RedirectResponse(url=redirect_url, status_code=302)
+@app.get("/login/kakao-callback", include_in_schema=False)
+def kakao_callback_public(code: str):
+    # 앱으로 302
+    return RedirectResponse(
+        url=f"trendie://oauth/callback?provider=kakao&code={code}",
+        status_code=302
+    )
 
 
 # 사용자가 login_url로 들어가 로그인을 진행하면 인가 코드가 발급
